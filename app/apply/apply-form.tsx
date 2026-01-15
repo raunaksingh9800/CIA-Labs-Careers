@@ -86,7 +86,7 @@ export default function ApplyPage() {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col lg:flex-row overflow-hidden bg-black text-white">
+    <div className="h-dvh w-full flex flex-col lg:flex-row overflow-hidden bg-black text-white">
       {/* Left Info Panel */}
       <div className="hidden lg:block pb-10 lg:w-[30vw] h-full bg-[#1C1C1C] border-r border-[#333] overflow-y-auto custom-scrollbar">
         <RoleDetails role={role} />

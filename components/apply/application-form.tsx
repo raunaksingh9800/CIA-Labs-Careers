@@ -33,7 +33,6 @@ export function ApplicationForm({ role }: { role: Role }) {
         className="max-w-2xl  pb-12"
       >
         {/* Mobile Header */}
-       
 
         <div className="flex items-center gap-2 opacity-60 text-xs mb-6">
           <i className="hn hn-arrow-left"></i>
@@ -45,7 +44,9 @@ export function ApplicationForm({ role }: { role: Role }) {
           </Link>
         </div>
 
-        <h2 className="lg:text-2xl font-medium mb-2">
+        <h1 className="text-3xl font-medium lg:hidden  mt-4 mb-4">{role.title}</h1>
+
+        <h2 className="lg:text-2xl font-medium mb-2  opacity-60 lg:opacity-100">
           Apply for this Position
         </h2>
         <p className="opacity-60 mb-8">
@@ -156,7 +157,7 @@ export function ApplicationForm({ role }: { role: Role }) {
             </button>
           </div>
 
-          <p className="text-xs opacity-40 text-center">
+          <p className="text-xs opacity-40 text-center mb-8">
             By submitting this form, you agree to our privacy policy.
           </p>
         </form>
