@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.36.7",
     "@hackernoon/pixel-icon-library": "^1.0.6",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/client": "^6.19.1",

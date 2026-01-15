@@ -7,7 +7,10 @@ import LeftSection from "@/components/higherLevel/leftSection";
 import { Inter, Edu_NSW_ACT_Cursive } from "next/font/google";
 import { FilterProvider } from "@/app/context/FilterContext";
 import { useState } from "react";
+import {
+  ClerkProvider,
 
+} from '@clerk/nextjs'
 const inter = Inter({ subsets: ["latin"] });
 const edu = Edu_NSW_ACT_Cursive({
   subsets: ["latin"],
@@ -22,6 +25,7 @@ export default function RootLayout({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
+        <ClerkProvider>
     <html lang="en" className={`${inter.className} ${edu.className}`}>
       <body>
         <FilterProvider>
@@ -43,5 +47,6 @@ export default function RootLayout({
         </FilterProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }
