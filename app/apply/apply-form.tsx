@@ -32,7 +32,7 @@ export default function ApplyPage() {
   // Loading View
   if (loadingRole) {
     return (
-      <div className="h-screen flex w-screen lgw-[30vw]  lg:bg-[#1C1C1C] flex-col  px-6 py-6  text-white">
+      <div className="h-screen flex w-screen lg:w-[30vw]  lg:bg-[#1C1C1C] flex-col  px-6 py-6  text-white">
         <div className="h-5  bg-white/10 rounded w-1/2 mb-4"></div>
         <div className=" flex flex-row gap-4">
           <div className="h-4 animate-pulse bg-white/10 rounded w-11/12"></div>
