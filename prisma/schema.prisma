@@ -1,0 +1,54 @@
+enum RoleType {
+  TECH_CORE        // Backend, Frontend, DevOps, Systems
+  TECH_AI          // ML, AI, Data, Research
+  TECH_WEB         // Web-only roles (Next.js, UI-heavy)
+  
+  MEDIA_DESIGN     // Graphic, UI/UX, Motion
+  MEDIA_CONTENT    // Writing, Social Media, Copy
+  MEDIA_VIDEO      // Video editing, Reels, YouTube
+
+  OPERATIONS       // Ops, logistics, execution
+  MANAGEMENT       // Leads, coordinators, PM-like
+  NON_TECH_GENERAL // Outreach, HR, community
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+  isOpen      Boolean  @default(true)
+
+  // ✅ NEW FIELDS
+  years       Int[]            // e.g. [1,2,3]
+  branches    String[]         // e.g. ["CSE","ECE"]
+  type        RoleType
+  commitment  String           // e.g. "5 hrs/week for 6 months"
+  questions   Json?            // dynamic application questions
+
+  createdAt   DateTime @default(now())
+
+  applications Application[]
+}
+
+model Application {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  resumeUrl String?
+  answers   Json?
+  createdAt DateTime @default(now())
+
+  role   Role   @relation(fields: [roleId], references: [id])
+  roleId String
+}

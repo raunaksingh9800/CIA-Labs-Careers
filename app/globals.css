@@ -24,3 +24,59 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.markdown h1 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.markdown h2 {
+  font-size: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.markdown p {
+  margin-top: 0.75rem;
+  line-height: 1.6;
+}
+
+.markdown ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.markdown a {
+  color: #6eff63;
+  text-decoration: underline;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: white;
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.3);
+}
