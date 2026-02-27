@@ -80,3 +80,41 @@ input[type="range"]::-webkit-slider-runnable-track {
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.3);
 }
+
+
+/* MDX Editor dark mode fixes */
+.mdxeditor {
+  --mdxeditor-text-color: #e5e7eb;          /* text-gray-200 */
+  --mdxeditor-bg-color: transparent;
+  --mdxeditor-border-color: rgba(255,255,255,0.2);
+  --mdxeditor-toolbar-bg: #000;
+  --mdxeditor-toolbar-text: #e5e7eb;
+}
+
+/* Editor content */
+.mdxeditor-content {
+  color: #e5e7eb;
+}
+
+/* Placeholder text */
+.mdxeditor-content::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+
+/* Headings */
+.mdxeditor h1,
+.mdxeditor h2,
+.mdxeditor h3 {
+  color: #f9fafb;
+}
+
+/* Code blocks */
+.mdxeditor pre {
+  background: #0f172a; /* slate-900 */
+  color: #e5e7eb;
+}
+
+/* Toolbar buttons */
+.mdxeditor-toolbar button {
+  color: #e5e7eb;
+}

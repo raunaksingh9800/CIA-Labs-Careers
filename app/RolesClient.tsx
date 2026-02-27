@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFilter } from "@/app/context/FilterContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Filter from "@/components/higherLevel/filter";
@@ -16,31 +16,83 @@ type Role = {
   commitment: string;
 };
 
-export default function RolesClient({
-  initialRoles,
-}: {
-  initialRoles: Role[];
-}) {
-  const [roles] = useState<Role[]>(initialRoles);
+// Skeleton loader to show immediately on mount
+function RolesSkeleton() {
+  return (
+    <main className="flex-1 overflow-y-scroll">
+      <div className="flex flex-col lg:hidden px-6 mt-4 pb-6 border-b border-[#1C1C1C]">
+        <div className="h-6 bg-white/10 rounded w-32 mb-4 animate-pulse"></div>
+        <div className="h-10 bg-white/10 rounded w-full animate-pulse"></div>
+      </div>
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="lg:w-[60vw] px-6 py-6 border-b border-[#1C1C1C] overflow-hidden animate-pulse"
+        >
+          <div className="h-8 bg-white/10 rounded w-1/2 mb-4"></div>
+          <div className="flex flex-row gap-6 mb-4">
+            <div className="h-5 bg-white/10 rounded w-24"></div>
+            <div className="h-5 bg-white/10 rounded w-24"></div>
+            <div className="h-5 bg-white/10 rounded w-24"></div>
+          </div>
+          <div className="space-y-2 mb-6">
+            <div className="h-4 bg-white/10 rounded w-full"></div>
+            <div className="h-4 bg-white/10 rounded w-5/6"></div>
+          </div>
+          <div className="h-8 bg-white/10 rounded w-28"></div>
+        </div>
+      ))}
+    </main>
+  );
+}
+
+export default function RolesClient() {
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
   const { query, year, branch, type, setQuery } = useFilter();
+
+  // Fetch data immediately after the UI shell paints
+  useEffect(() => {
+    setLoading(true);
+    fetch("/api/roles")
+      .then((res) => res.json())
+      .then((data) => {
+        setRoles(data.roles || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch roles:", err);
+        setLoading(false);
+      });
+  }, []);
 
   const filteredRoles = useMemo(() => {
     return roles.filter((role) => {
       if (query && !role.title.toLowerCase().includes(query.toLowerCase()))
         return false;
-
       if (year && role.years.length && !role.years.includes(year)) return false;
-
       if (branch && !role.branches.includes(branch.toUpperCase())) return false;
-
       if (type && role.type.toLowerCase() !== type) return false;
-
       return true;
     });
   }, [roles, query, year, branch, type]);
 
+  // Show skeleton while waiting for API
+  if (loading) {
+    return (
+      <>
+        <Filter
+          showMobile={showMobileFilter}
+          onCloseMobile={() => setShowMobileFilter(false)}
+        />
+        <RolesSkeleton />
+      </>
+    );
+  }
+
+  // Handle empty state
   if (filteredRoles.length === 0) {
     return (
       <>
@@ -54,12 +106,16 @@ export default function RolesClient({
             <h1 className="mt-4 text-xl font-medium">
               No matching roles found
             </h1>
-
             <p className="mt-2 w-fit text-sm h-full opacity-60 lg:px-32">
               We couldn't find any roles that match your current criteria.
               Modify your filters or reset them to explore all available roles.
             </p>
-            <button onClick={() => {window.location.reload()}} className="text-sm underline hover:cursor-pointer mt-4 opacity-80">
+            <button
+              onClick={() => {
+                window.location.reload();
+              }}
+              className="text-sm underline hover:cursor-pointer mt-4 opacity-80"
+            >
               Clear All
             </button>
           </div>
@@ -68,6 +124,7 @@ export default function RolesClient({
     );
   }
 
+  // Main Render
   return (
     <>
       <Filter

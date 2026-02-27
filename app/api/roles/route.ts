@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-    import { RoleType } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
+import { prisma } from "@/lib/prisma";
+import { RoleType } from "@prisma/client";
+let cachedRoles: any = null;
+let lastFetchTime = 0;
+const CACHE_DURATION = 1000 * 60 * 5; // 5 minutes
 export async function GET(req: Request) {
   try {
+    const now = Date.now();
+
+    if (cachedRoles && now - lastFetchTime < CACHE_DURATION) {
+      return NextResponse.json({ success: true, roles: cachedRoles });
+    }
+
     const { searchParams } = new URL(req.url);
 
     const q = searchParams.get("q")?.toLowerCase();
@@ -13,44 +19,28 @@ export async function GET(req: Request) {
     const branch = searchParams.get("branch");
     const type = searchParams.get("type");
 
-    // Import RoleType enum from Prisma client
-
     const roles = await prisma.role.findMany({
       where: {
         isOpen: true,
-
-        // TEXT SEARCH (title)
         ...(q && {
           title: {
             contains: q,
             mode: "insensitive",
           },
         }),
-
-        // YEAR FILTER (array contains)
         ...(year && {
-          years: {
-            has: Number(year),
-          },
+          years: { has: Number(year) },
         }),
-
-        // BRANCH FILTER (array contains)
         ...(branch && {
-          branches: {
-            has: branch,
-          },
+          branches: { has: branch },
         }),
-
-        // TYPE FILTER
         ...(type && {
           type: type as RoleType,
         }),
       },
-
       orderBy: {
         createdAt: "desc",
       },
-
       select: {
         id: true,
         title: true,
@@ -65,14 +55,15 @@ export async function GET(req: Request) {
       },
     });
 
+    cachedRoles = roles;
+    lastFetchTime = now;
+
     return NextResponse.json({ success: true, roles });
   } catch (error) {
     console.error("GET /api/roles error:", error);
     return NextResponse.json(
       { success: false, error: (error as Error).message },
-      { status: 500 }
+      { status: 500 },
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

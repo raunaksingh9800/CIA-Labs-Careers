@@ -27,7 +27,7 @@ model Role {
   slug        String   @unique
   description String
   isOpen      Boolean  @default(true)
-
+  byAdmin     String
   // ✅ NEW FIELDS
   years       Int[]            // e.g. [1,2,3]
   branches    String[]         // e.g. ["CSE","ECE"]

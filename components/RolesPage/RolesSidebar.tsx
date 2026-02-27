@@ -1,7 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { motion, LayoutGroup } from "framer-motion";
 
 function limitWords(text: string, limit = 20) {
@@ -32,34 +30,24 @@ function SkeletonLoader() {
   );
 }
 
-export default function RolesSidebar() {
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug");
-  const [sidebarRoles, setSidebarRoles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface RolesSidebarProps {
+  roles: any[];
+  loading: boolean;
+  currentSlug: string | null;
+}
 
-  useEffect(() => {
-    setLoading(true);
-    fetch("/api/roles")
-      .then((res) => res.json())
-      .then((data) => {
-        setSidebarRoles(data.roles || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
+export default function RolesSidebar({ roles, loading, currentSlug }: RolesSidebarProps) {
   return (
     <div
-      className="w-[30vw] min-h-full bg-[#1C1C1C] hidden  flex-col overflow-y-auto px-4 py-4 gap-4 lg:flex"
+      className="w-[30vw] min-h-full bg-[#1C1C1C] hidden flex-col overflow-y-auto px-4 py-4 gap-4 lg:flex"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       {loading ? (
         <SkeletonLoader />
       ) : (
         <LayoutGroup>
-          {sidebarRoles.map((r) => {
-            const isActive = r.slug === slug;
+          {roles.map((r) => {
+            const isActive = r.slug === currentSlug;
             return (
               <Link
                 key={r.id}

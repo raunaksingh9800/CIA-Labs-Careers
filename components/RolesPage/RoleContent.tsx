@@ -1,9 +1,7 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import Head from "next/head";
 
 function RoleContentSkeleton() {
   return (
@@ -43,21 +41,13 @@ function RoleContentSkeleton() {
   );
 }
 
-export default function RoleContent() {
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug");
-  const [role, setRole] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+interface RoleContentProps {
+  role: any;
+  loading: boolean;
+  currentSlug: string | null;
+}
 
-  useEffect(() => {
-    if (!slug) return;
-    setLoading(true);
-    fetch(`/api/roles/one?slug=${slug}`)
-      .then((res) => res.json())
-      .then((data) => setRole(data.role))
-      .finally(() => setLoading(false));
-  }, [slug]);
-
+export default function RoleContent({ role, loading, currentSlug }: RoleContentProps) {
   useEffect(() => {
     if (role?.title) {
       // Set page title
@@ -92,16 +82,12 @@ export default function RoleContent() {
       updateMetaTag('twitter:card', 'summary_large_image', false);
       updateMetaTag('twitter:title', role.title, false);
       updateMetaTag('twitter:description', description, false);
-      
-      // Optional: Add custom image if available
-      // updateMetaTag('og:image', role.imageUrl || '/default-role-image.jpg');
-      // updateMetaTag('twitter:image', role.imageUrl || '/default-role-image.jpg', false);
     }
-  }, [role, slug]);
+  }, [role, currentSlug]);
 
-  if (!slug) return <div className="p-6">Select a role</div>;
+  if (!currentSlug) return <div className="p-6">Select a role</div>;
   if (loading) return <RoleContentSkeleton />;
-  if (!role) return null;
+  if (!role) return <div className="p-6">Role not found.</div>;
 
   const currentUrl = typeof window !== 'undefined' ? `${window.location.origin}/roles?slug=${role.slug}` : '';
 
@@ -117,7 +103,6 @@ export default function RoleContent() {
         console.log('Share cancelled or failed');
       }
     } else {
-      // Fallback: Copy to clipboard
       navigator.clipboard.writeText(currentUrl);
       alert('Link copied to clipboard!');
     }
